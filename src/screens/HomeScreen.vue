@@ -1,5 +1,5 @@
 <template>
-  <scroll-view class="scrollContainer" :content-container-style="{contentContainer: {paddingVertical: 20}}">
+  <scroll-view class="scroll-container" :content-container-style="{contentContainer: {paddingVertical: 20}}">
     <status-bar bar-style="dark-content" />
     <touchable-opacity class="game" :on-press="game">
       <text class="game-text">DAILY GAME</text>
@@ -10,7 +10,7 @@
 </template>
 
 <style>
-.scrollContainer {
+.scroll-container {
   background-color: rgb(242,242,247);
 }
 .game {
@@ -27,7 +27,7 @@
 </style>
 
 <script>
-// Import of react for icons and images
+// Import of components
 import Article from './components/Article.vue';
 
 export default{
@@ -39,20 +39,22 @@ export default{
     return {
       articles: [
         {
-          title: 'Title',
+          title: 'Google',
           text: 'Subtitle\nsub\nsub',
           source: {
             name: 'Source',
+            url: 'https://www.google.it'
           },
           userLike: false,
           likesCount: 10,
           commentsCount: 0,
         },
         {
-          title: 'Title2',
-          text: 'Subtitle\nsub\nsub',
+          title: 'Facebook',
+          text: 'Subtitle\nsubnsub',
           source: {
             name: 'Source',
+            url: 'https://www.facebook.it'
           },
           userLike: false,
           likesCount: 2,

@@ -31,7 +31,7 @@
 }
 .bg{
   width: 425;
-  height: 300;
+  height: 320;
   position: absolute;
   opacity: .5;
   z-index: -1;

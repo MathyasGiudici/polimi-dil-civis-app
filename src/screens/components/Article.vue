@@ -1,5 +1,5 @@
 <template>
-  <touchable-opacity class="container" :on-press="click" >
+  <touchable-opacity class="container" :on-press="click" :disabled="navigation==null" >
     <text class="title">{{article.title}}</text>
     <text class="text">{{article.text}}</text>
     <text class="source">{{article.source.name}}</text>
@@ -85,7 +85,6 @@ export default{
         this.article.likesCount += 1;
       else
         this.article.likesCount -= 1;
-
     }
   }
 }
