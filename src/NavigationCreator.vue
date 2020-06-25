@@ -23,7 +23,9 @@ import store from './store';
 
 // Import of the screens
 import HomeScreen from "./screens/HomeScreen.vue";
+import GameScreen from "./screens/GameScreen.vue";
 
+import ArticleScreen from "./screens/ArticleScreen.vue";
 
 // General Header of CIVIS
 var GeneralHeader = {
@@ -36,7 +38,7 @@ var GeneralHeader = {
       paddingLeft: 10,
     },
     headerLeft: (
-      <Image style={{ width: 140, height: 60 }} source={require('../assets/imgs/logo.png')}/>
+      <Image style={{ width: 140, height: 60 }} source={require('../assets/imgs/logoBlack.png')}/>
     )
   }
 };
@@ -45,7 +47,8 @@ const BottomTabs = createBottomTabNavigator(
   {
     Home: {
       screen: createStackNavigator({
-        Home : HomeScreen
+          Home : HomeScreen,
+          Article : ArticleScreen
         },
         GeneralHeader
       ),
@@ -57,7 +60,7 @@ const BottomTabs = createBottomTabNavigator(
     Search :
     {
       screen: createStackNavigator({
-        Home : HomeScreen
+          Home : HomeScreen
         },
         GeneralHeader
       ),
@@ -68,7 +71,7 @@ const BottomTabs = createBottomTabNavigator(
     },
     Game :
     {
-      screen: HomeScreen,
+      screen: GameScreen,
       navigationOptions: {
         tabBarLabel: 'Game',
         tabBarIcon: ({tintColor}) => <Icon name="gamepad" color={tintColor} size={25}/>
