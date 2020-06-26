@@ -23,9 +23,12 @@ import store from './store';
 
 // Import of the screens
 import HomeScreen from "./screens/HomeScreen.vue";
+import SearchScreen from "./screens/SearchScreen.vue";
 import GameScreen from "./screens/GameScreen.vue";
+import UserScreen from "./screens/UserScreen.vue";
 
 import ArticleScreen from "./screens/ArticleScreen.vue";
+import TopicScreen from "./screens/TopicScreen.vue";
 
 // General Header of CIVIS
 var GeneralHeader = {
@@ -48,7 +51,8 @@ const BottomTabs = createBottomTabNavigator(
     Home: {
       screen: createStackNavigator({
           Home : HomeScreen,
-          Article : ArticleScreen
+          Article : ArticleScreen,
+          Topic : TopicScreen
         },
         GeneralHeader
       ),
@@ -60,7 +64,7 @@ const BottomTabs = createBottomTabNavigator(
     Search :
     {
       screen: createStackNavigator({
-          Home : HomeScreen
+          Search : SearchScreen
         },
         GeneralHeader
       ),
@@ -80,7 +84,7 @@ const BottomTabs = createBottomTabNavigator(
     User :
     {
       screen: createStackNavigator({
-        Home : HomeScreen
+        User : UserScreen
         },
         GeneralHeader
       ),

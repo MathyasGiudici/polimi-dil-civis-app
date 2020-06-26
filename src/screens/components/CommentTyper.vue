@@ -4,7 +4,7 @@
     <text-input class="input-container" placeholder="Type here to comment!" v-model="text" />
     <touchable-opacity class="button-send" :on-press="send">
       <icon name="send" size="20" color="white"/>
-  </touchable-opacity>
+    </touchable-opacity>
   </view>
 </template>
 
@@ -16,11 +16,6 @@
   width: 100%;
   height: 60;
   background-color: white;
-  borderStyle: solid;
-  borderTopWidth: .3;
-  borderTopColor: lightgrey;
-  borderBottomWidth: .3;
-  borderBottomColor: lightgrey;
   padding-top: 5;
   padding-bottom: 5;
   padding-right: 15;

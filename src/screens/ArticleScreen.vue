@@ -1,6 +1,10 @@
 <template>
     <view class="container">
       <scroll-view class="scroll-container" :content-container-style="{contentContainer: {paddingVertical: 20}}">
+        <touchable-opacity class="back-container" :on-press="goTopic">
+          <icon name="chevron-up" color="grey" size="30"/>
+          <text class="back-button">Go to Topic</text>
+        </touchable-opacity>
         <!--Article information-->
         <article :article="article" />
 
@@ -19,7 +23,7 @@
         <!-- Filter -->
         <filter :filter="filter" />
         <!-- Comment visualization -->
-        <comment-visualizer :comment="comment"/>
+        <comment-visualizer v-for="comment in comments" :comment="comment"/>
 
         <!-- Padding -->
         <view style="height:50"></view>
@@ -37,9 +41,33 @@
 }
 .comment-typer-style{
   width: 100%;
+  borderStyle: solid;
+  borderTopWidth: .3;
+  borderTopColor: lightgrey;
+  borderBottomWidth: .3;
+  borderBottomColor: lightgrey;
+
 }
 .scroll-container {
   background-color: rgb(242,242,247);
+}
+.back-container{
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  background-color: white;
+  borderStyle: solid;
+  borderBottomWidth: .3;
+  borderBottomColor: lightgrey;
+  padding-top: 5;
+  padding-bottom: 5;
+  padding-right: 15;
+  padding-left: 15;
+  margin-top: 0;
+}
+.back-button{
+  font-size: 17;
+  color: grey;
 }
 .object-container{
   align-items: flex-start;
@@ -51,8 +79,8 @@
   borderTopColor: lightgrey;
   borderBottomWidth: .3;
   borderBottomColor: lightgrey;
-  padding-top: 5;
-  padding-bottom: 5;
+  padding-top: 10;
+  padding-bottom: 10;
   padding-right: 15;
   padding-left: 15;
   margin-top: 10;
@@ -98,17 +126,62 @@ export default{
       keyboardWillShowSub: null,
       keyboardWillHideSub: null,
       keyboardHeight: 0,
-      comment: {
-        text: 'Subtitle\nsubnsub',
-        userLike: true,
-        likesCount: 2,
-        commentsCount: 1,
-        user:{
-          name: 'Mario',
-          surname: 'Rossi',
-          level: 1,
+      comments: [
+        {
+          text: 'Subtitle\nsubnsub',
+          userLike: true,
+          likesCount: 2,
+          commentsCount: 1,
+          user:{
+            name: 'Primo',
+            surname: 'Commento',
+            level: 1,
+          },
+          children: [{
+            text: 'Subtitle\nsubnsub',
+            userLike: true,
+            likesCount: 2,
+            commentsCount: 1,
+            user:{
+              name: 'Figlio',
+              surname: 'Uno',
+              level: 1,
+            },
+          },{
+            text: 'Subtitle\nsubnsub',
+            userLike: true,
+            likesCount: 2,
+            commentsCount: 1,
+            user:{
+              name: 'Figlio',
+              surname: 'Due',
+              level: 1,
+            },
+          }],
+        },
+        {
+          text: 'Subtitle\nsubnsub',
+          userLike: true,
+          likesCount: 2,
+          commentsCount: 1,
+          user:{
+            name: 'Secondo',
+            surname: 'Commento',
+            level: 1,
+          },
+          children: [{
+            text: 'Subtitle\nsubnsub',
+            userLike: true,
+            likesCount: 2,
+            commentsCount: 1,
+            user:{
+              name: 'Figlio',
+              surname: 'Unico',
+              level: 1,
+            }
+          }],
         }
-      },
+      ],
     };
   },
   mounted: function() {
@@ -126,6 +199,9 @@ export default{
     },
     getStatistics: function(){
 
+    },
+    goTopic: function () {
+      this.navigation.navigate('Topic',{topic: this.article.topic});
     },
     keyboardWillShow(event){
       // Animation to change the position of the comment-typer

@@ -41,6 +41,7 @@ export default{
         {
           title: 'Google',
           text: 'Subtitle\nsub\nsub',
+          topic: 'Topic1',
           source: {
             name: 'Source',
             url: 'https://www.google.it'
@@ -52,6 +53,7 @@ export default{
         {
           title: 'Facebook',
           text: 'Subtitle\nsubnsub',
+          topic: 'Topic 2',
           source: {
             name: 'Source',
             url: 'https://www.facebook.it'

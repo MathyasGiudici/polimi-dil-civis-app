@@ -26,19 +26,6 @@
         <text class="social-text">{{comment.commentsCount}}</text>
       </view>
     </view>
-
-    <!-- Sub comments -->
-    <sub-comment-visualizer v-if="toLoad" :comment="comment.children[0]" />
-
-    <!-- Load more -->
-    <view class="loadmore" v-if="toLoad">
-      <button title="Load more comments" color="grey" :on-press="loadMore"/>
-    </view>
-
-    <sub-comment-visualizer v-if="!toLoad" v-for="child in comment.children" :comment="child" />
-
-    <comment-typer class="comment-typer-style"/>
-
   </view>
 </template>
 
@@ -48,7 +35,7 @@
   align-items: flex-start;
   justify-content: center;
   width: 100%;
-  background-color: white;
+  background-color: lightgrey;
   borderStyle: solid;
   borderTopWidth: .3;
   borderTopColor: lightgrey;
@@ -67,7 +54,7 @@
 .user-img{
   width: 60;
   height: 60;
-  background-color: lightgrey;
+  background-color: grey;
 }
 .user-name{
   margin-left: 10;
@@ -98,10 +85,6 @@
 .social-padding{
   width: 10;
 }
-.loadmore{
-  margin-top: 10;
-  align-self: center;
-}
 </style>
 
 <script>
@@ -109,20 +92,11 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// Import of components
-import CommentTyper from './CommentTyper.vue';
-import SubCommentVisualizer from './SubCommentVisualizer.vue';
-
 export default{
   props: {
     comment: { Type: Object }
   },
-  components: { CommentTyper, Icon, SubCommentVisualizer },
-  data: function(){
-    return {
-      toLoad : this.comment.children.length > 1,
-    };
-  },
+  components: { Icon },
   methods:{
     like: function(){
       // Changing the internal state
@@ -131,9 +105,6 @@ export default{
         this.comment.likesCount += 1;
       else
         this.comment.likesCount -= 1;
-    },
-    loadMore: function () {
-      this.toLoad = !this.toLoad;
     }
   }
 }
