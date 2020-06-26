@@ -3,6 +3,7 @@
     <text class="title">{{article.title}}</text>
     <text class="text">{{article.text}}</text>
     <text class="source">{{article.source.name}}</text>
+    
     <view class="social">
       <touchable-opacity :on-press="like" >
         <icon name="heart" size="30" color="grey" v-if="article.userLike"/>
@@ -35,7 +36,7 @@
   margin-top: 10;
 }
 .title{
-  font-size: 34;
+  font-size: 28;
   font-weight: bold;
 }
 .text{

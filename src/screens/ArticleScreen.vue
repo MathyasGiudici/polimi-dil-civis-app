@@ -18,8 +18,15 @@
 
         <!-- Filter -->
         <filter :filter="filter" />
+        <!-- Comment visualization -->
+        <comment-visualizer :comment="comment"/>
+
+        <!-- Padding -->
+        <view style="height:50"></view>
       </scroll-view>
-      <comment-typer class="comment"/>
+
+      <!-- Comment insertion -->
+      <comment-typer class="comment-typer-style"/>
       <animated:view :style="{ height: keyboardHeight }" />
     </view>
 </template>
@@ -28,7 +35,7 @@
 .container{
   flex: 1;
 }
-.comment{
+.comment-typer-style{
   width: 100%;
 }
 .scroll-container {
@@ -75,22 +82,33 @@ import { Animated, Easing, Linking, Keyboard } from 'react-native';
 import Article from './components/Article.vue';
 import Filter from './components/Filter.vue';
 import CommentTyper from './components/CommentTyper.vue';
+import CommentVisualizer from './components/CommentVisualizer.vue';
 
 export default{
   props: {
     navigation: { type: Object },
   },
-  components: { Article, CommentTyper, Filter, Icon },
+  components: { Article, CommentTyper, CommentVisualizer, Filter, Icon },
   data: function(){
     return {
       article : this.navigation.state.params.article,
       filter: {
         filter: "Relevance"
       },
-      animated: null,
       keyboardWillShowSub: null,
       keyboardWillHideSub: null,
       keyboardHeight: 0,
+      comment: {
+        text: 'Subtitle\nsubnsub',
+        userLike: true,
+        likesCount: 2,
+        commentsCount: 1,
+        user:{
+          name: 'Mario',
+          surname: 'Rossi',
+          level: 1,
+        }
+      },
     };
   },
   mounted: function() {

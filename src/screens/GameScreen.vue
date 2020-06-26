@@ -12,8 +12,7 @@
           <text class="button-text">Coming soon!</text>
         </view>
       </view>
-      <image class="bg"
-        :source="require('../../assets/imgs/game.png')" />
+      <image class="bg" :source="require('../../assets/imgs/game.png')" />
   </view>
 </template>
 
