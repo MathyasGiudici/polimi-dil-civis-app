@@ -2,7 +2,7 @@
   <view class="container">
     <search-bar placeholder="Search by topic..." :onChangeText="updateSearch" :value="search" lightTheme="true" platform="ios"/>
     <scroll-view class="scroll-container" :content-container-style="{contentContainer: {paddingVertical: 20}}">
-      <text class="small-title">Recommended for you</text>
+      <text class="small-title" v-if="!isSearchMode" >Recommended for you</text>
       <article v-for="article in articles" :article="article" :navigation="navigation"/>
     </scroll-view>
   </view>
@@ -41,6 +41,7 @@ export default{
   data: function(){
     return {
       search: '',
+      isSearchMode: false,
       articles: [{
         title: 'Facebook',
         text: 'Subtitle\nsubnsub',
@@ -58,6 +59,7 @@ export default{
   methods:{
     updateSearch: function(search){
       this.search = search;
+      this.isSearchMode = (this.search != '');
     }
   }
 }

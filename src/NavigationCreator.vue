@@ -27,6 +27,8 @@ import SearchScreen from "./screens/SearchScreen.vue";
 import GameScreen from "./screens/GameScreen.vue";
 import UserScreen from "./screens/UserScreen.vue";
 
+import LoginScreen from "./screens/LoginScreen.vue";
+
 import ArticleScreen from "./screens/ArticleScreen.vue";
 import TopicScreen from "./screens/TopicScreen.vue";
 
@@ -64,7 +66,9 @@ const BottomTabs = createBottomTabNavigator(
     Search :
     {
       screen: createStackNavigator({
-          Search : SearchScreen
+          Search : SearchScreen,
+          Article : ArticleScreen,
+          Topic : TopicScreen
         },
         GeneralHeader
       ),
@@ -83,10 +87,10 @@ const BottomTabs = createBottomTabNavigator(
     },
     User :
     {
-      screen: createStackNavigator({
-        User : UserScreen
+      screen: createSwitchNavigator({
+        User : UserScreen,
+        Login: LoginScreen
         },
-        GeneralHeader
       ),
       navigationOptions: {
         tabBarLabel: 'User',
