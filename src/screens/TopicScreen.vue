@@ -30,7 +30,7 @@
   margin-top: 10;
 }
 .title{
-  font-size: 32;
+  font-size: 34;
   font-weight: bold;
 }
 </style>
