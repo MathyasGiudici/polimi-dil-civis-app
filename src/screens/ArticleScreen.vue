@@ -26,12 +26,12 @@
         <comment-visualizer v-for="comment in comments" :comment="comment"/>
 
         <!-- Padding -->
-        <view style="height:50"></view>
+        <view style="height:60"></view>
       </scroll-view>
 
       <!-- Comment insertion -->
-      <comment-typer class="comment-typer-style"/>
-      <animated:view :style="{ height: keyboardHeight }" />
+      <comment-typer class="comment-typer-style" eventType="general"/>
+      <animated:view :style="{ height: keyboard.height }" />
     </view>
 </template>
 
@@ -103,8 +103,11 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// Managin external links and modal
+// Managing external links and modal
 import { Animated, Easing, Linking, Keyboard } from 'react-native';
+
+// Event management
+import { EventRegister } from 'react-native-event-listeners';
 
 // Import of components
 import Article from './components/Article.vue';
@@ -123,9 +126,13 @@ export default{
       filter: {
         filter: "Relevance"
       },
-      keyboardWillShowSub: null,
-      keyboardWillHideSub: null,
-      keyboardHeight: 0,
+      keyboard: {
+        showListener: null,
+        hideListener: null,
+        typerListener: null,
+        height: 0,
+        shiftDown: 0,
+      },
       comments: [
         {
           text: 'Subtitle\nsubnsub',
@@ -185,13 +192,15 @@ export default{
     };
   },
   mounted: function() {
-   this.keyboardHeight = new Animated.Value(0);
-   this.keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
-   this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+   this.keyboard.height = new Animated.Value(0);
+   this.keyboard.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
+   this.keyboard.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+   this.keyboard.typerListener = EventRegister.addEventListener('CommentTyper', this.typerEventHandler);
  },
  beforeDestroy: function() {
-   this.keyboardWillShowSub.remove();
-   this.keyboardWillHideSub.remove();
+   this.keyboard.showListener.remove();
+   this.keyboard.hideListener.remove();
+   EventRegister.removeEventListener(this.keyboard.typerListener);
  },
  methods:{
     goToResource: function(){
@@ -204,21 +213,28 @@ export default{
       this.navigation.navigate('Topic',{topic: this.article.topic});
     },
     keyboardWillShow(event){
+      const value = event.endCoordinates.height - this.keyboard.shiftDown;
       // Animation to change the position of the comment-typer
-      Animated.timing(this.keyboardHeight, {
-        toValue: event.endCoordinates.height,
+      Animated.timing(this.keyboard.height, {
+        toValue: value,
         duration: event.duration,
         easing: Easing.linear,
       }).start(() => {});
     },
     keyboardWillHide(event){
       // Animation to get back the comment-typer
-      Animated.timing(this.keyboardHeight, {
+      Animated.timing(this.keyboard.height, {
         toValue: 0,
         duration: event.duration,
         easing: Easing.linear,
       }).start(() => {});
     },
+    typerEventHandler: function (code) {
+      if(code == 'focus:child')
+        this.keyboard.shiftDown = 60;
+      else
+        this.keyboard.shiftDown = 0;
+    }
   }
 }
 

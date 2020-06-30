@@ -48,21 +48,21 @@
   align-items: center;
 }
 .user-image{
-  width: 200;
-  height: 200;
-  borderRadius: 200;
+  width: 150;
+  height: 150;
+  borderRadius: 150;
   resizeMode: contain;
 }
 .user-name{
   padding-top: 10;
   margin-left: 10;
-  font-size: 34;
+  font-size: 28;
   /* font-weight: bold; */
 }
 .user-level{
   margin-top: 5;
   margin-left: 10;
-  font-size: 24;
+  font-size: 20;
   font-weight: 200;
 }
 .scroll-container {
@@ -101,8 +101,8 @@ export default{
   data: function(){
     return {
       user:{
-        name: 'Figlio',
-        surname: 'Due',
+        name: 'Anna',
+        surname: 'Rossi',
         level: 1,
       }
     };

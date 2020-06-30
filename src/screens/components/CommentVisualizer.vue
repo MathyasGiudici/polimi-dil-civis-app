@@ -37,7 +37,7 @@
 
     <sub-comment-visualizer v-if="!toLoad" v-for="child in comment.children" :comment="child" />
 
-    <comment-typer class="comment-typer-style"/>
+    <comment-typer class="comment-typer-style" eventType="child"/>
 
   </view>
 </template>

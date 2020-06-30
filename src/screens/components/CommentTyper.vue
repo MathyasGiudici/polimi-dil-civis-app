@@ -1,7 +1,7 @@
 <template>
   <view class="container">
     <icon name="comment" size="30" color="grey"/>
-    <text-input class="input-container" placeholder="Type here to comment!" v-model="text" />
+    <text-input class="input-container" placeholder="Type here to comment!" v-model="text" :onFocus="focus" />
     <touchable-opacity class="button-send" :on-press="send">
       <icon name="send" size="20" color="white"/>
     </touchable-opacity>
@@ -41,7 +41,13 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// Event management
+import { EventRegister } from 'react-native-event-listeners';
+
 export default{
+  props: {
+    eventType: { type: String }
+  },
   components: { Icon },
   data: function(){
     return {
@@ -52,6 +58,10 @@ export default{
     send(){
       console.log("text:" + this.text);
       return;
+    },
+    focus: function () {
+      const code = 'focus:' + this.eventType;
+      EventRegister.emit('CommentTyper',code);
     }
   }
 }
