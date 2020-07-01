@@ -2,6 +2,7 @@
   <view class="container">
     <scroll-view  class="scroll" :content-container-style="{contentContainer: {paddingVertical: 20}}">
       <text class="title">Sign In</text>
+      <!-- TODO: must be changed an loaded using uri -->
       <image class="user-image" :source="require('../../assets/imgs/usertest.jpg')" />
       <text-input class="password" placeholder="password" v-model="password" :onChangeText="passwordChange" secureTextEntry="true" />
       <touchable-opacity class="element-container button">
@@ -12,7 +13,7 @@
         <button title="Swich account" color="grey"  disabled="true"  />
       </view>
       <view class="links" style="justify-content:center;">
-        <button title="REGISTRATION" color="grey"/>
+        <button title="REGISTRATION" color="grey" :on-press="goToRegistration"/>
       </view>
     </scroll-view>
     <animated:view :style="{ height: keyboard.height}" />
@@ -73,11 +74,6 @@
 </style>
 
 <script>
-// Import of react for icons, images and safe area
-import * as React from 'react';
-import { Image } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 // Managing external modal
 import { Animated, Easing, Keyboard } from 'react-native';
 
@@ -85,7 +81,6 @@ export default{
   props: {
     navigation: { type: Object }
   },
-  components: { Icon, Image },
   data: function(){
     return {
       password: '',
@@ -110,6 +105,9 @@ export default{
     passwordChange: function (p) {
       this.password = p;
     },
+    goToRegistration: function () {
+      this.navigation.navigate("Registration");
+    },
     keyboardWillShow(event){
       // Animation to change the position of the comment-typer
       Animated.timing(this.keyboard.height, {
@@ -128,5 +126,4 @@ export default{
     },
   }
 }
-
 </script>

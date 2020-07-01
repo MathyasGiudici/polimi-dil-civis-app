@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^2.5.0",
     "expo": "~37.0.3",
     "react": "^16.13.1",
     "react-dom": "~16.9.0",
@@ -23,7 +24,10 @@
     "vue-native-core": "0.1.4",
     "vue-native-helper": "0.1.4",
     "vue-native-router": "^0.1.1",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "expo-image-picker": "~8.1.0",
+    "expo-constants": "~9.0.0",
+    "expo-permissions": "~8.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",

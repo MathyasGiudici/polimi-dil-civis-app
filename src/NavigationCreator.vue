@@ -28,6 +28,8 @@ import GameScreen from "./screens/GameScreen.vue";
 import UserScreen from "./screens/UserScreen.vue";
 
 import LoginScreen from "./screens/LoginScreen.vue";
+import RegistrationScreen from "./screens/RegistrationScreen.vue";
+import SmsScreen from "./screens/SmsScreen.vue";
 
 import ArticleScreen from "./screens/ArticleScreen.vue";
 import TopicScreen from "./screens/TopicScreen.vue";
@@ -88,8 +90,10 @@ const BottomTabs = createBottomTabNavigator(
     User :
     {
       screen: createSwitchNavigator({
-        User : UserScreen,
-        Login: LoginScreen
+        User: UserScreen,
+        Login: LoginScreen,
+        Registration: RegistrationScreen,
+        Sms: SmsScreen
         },
       ),
       navigationOptions: {
