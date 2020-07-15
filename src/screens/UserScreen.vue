@@ -6,7 +6,7 @@
         <icon name="account-edit" size="30" color="grey"/>
       </touchable-opacity>
       <view class="user-info">
-        <image class="user-image" :source="require('../../assets/imgs/usertest.jpg')" />
+        <image class="user-image" :source="user.profilePic" />
         <text class="user-name">{{user.name}} {{user.surname}}</text>
         <text class="user-level">Level {{user.level}}</text>
       </view>
@@ -107,22 +107,34 @@ export default{
   components: { Icon, Image, SafeAreaView },
   data: function(){
     return {
-      user:{
-        name: 'Anna',
-        surname: 'Rossi',
-        level: 1,
-      }
+      user: store.state.session.user
     };
+  },
+  mounted: function(){
+    // Listener for the page focus (to refresh)
+    this.willFocusListener = this.navigation.addListener('willFocus',() =>{
+      return this.checkLogin();
+    });
+    this.checkLogin();
+  },
+  beforeDestroy: function(){
+    // Removing listeners
+    this.willFocusListener.remove();
   },
   methods:{
     notImplemented: function () {
       alert("We are sorry, the function will be available soon!");
     },
+    checkLogin: function(){
+      console.log(store.state.session);
+      if(store.state.session.token == '')
+        this.navigation.navigate('Login');
+    },
     statistics: function () {
       this.notImplemented();
     },
     logout: function () {
-      this.navigation.navigate("Login");
+      this.navigation.navigate('Login');
     },
     refreshState: function () {
       store.commit("DELETE");

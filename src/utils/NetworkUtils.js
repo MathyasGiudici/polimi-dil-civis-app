@@ -15,9 +15,11 @@ function isResponseReadable(response) {
 }
 
 async function getHome() {
+  // Creating variables
   var endpoint = store.state.endpoint + 'article/home';
   var params = { method: "get", headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
 
+  // Promise to handle the request
   var promise = Promise.race([timerPromise(),
     fetch(endpoint,params).then( response => response.json() ).catch((error) => {
         return 'Connection problems';
@@ -29,7 +31,32 @@ async function getHome() {
   if(!isResponseReadable(home))
     return;
 
+  // Storing the result
   store.commit('blobMutation', {key:'home', value: home });
 }
 
-export {timerPromise, isResponseReadable, getHome};
+async function postLogin(loginObj){
+  if(loginObj == null || loginObj.email == '' || loginObj.password == '')
+    return {status:false, session: {}};
+
+  // Creating variables
+  var endpoint = store.state.endpoint + 'user/login';
+  var params = { method: "post", headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(loginObj)};
+
+  // Promise to handle the request
+  var promise = Promise.race([timerPromise(),
+    fetch(endpoint,params).then( response => response.json() ).catch((error) => {
+        return 'Connection problems';
+      })
+  ]);
+
+  var session = await promise;
+
+  if(!isResponseReadable(session))
+    return {status:false, session: {}};
+
+  return {status:true, session: session};
+}
+
+export {timerPromise, isResponseReadable, getHome, postLogin};

@@ -51,12 +51,23 @@ export default{
       refreshing: false
     };
   },
+  mounted: function(){
+    // Listener for the page focus (to refresh)
+    this.willFocusListener = this.navigation.addListener('willFocus',() =>{
+      return this.refresh();
+    });
+  },
+  beforeDestroy: function(){
+    // Removing listeners
+    this.willFocusListener.remove();
+  },
   methods:{
     game: function(){
       this.navigation.navigate('Game');
     },
     refresh: async function () {
       await getHome();
+      this.articles = store.state.blob.home;
     }
   }
 }

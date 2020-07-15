@@ -20,6 +20,15 @@ export function REPLACE(state, obj){
   });
 }
 
+export function sessionMutation(state, session){
+  session.user.profilePic = { uri: session.user.profilePic };
+  state.session = session;
+}
+
+export function loginMutation(state, login){
+  state.login = login;
+}
+
 export function blobMutation(state, {key, value}){
   state.blob[key] = value;
 }

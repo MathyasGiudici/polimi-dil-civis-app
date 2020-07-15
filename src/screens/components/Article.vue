@@ -3,7 +3,7 @@
     <text class="title">{{article.title}}</text>
     <text class="text">{{article.text}}</text>
     <text class="source">{{article.source.name}}</text>
-    
+
     <view class="social">
       <touchable-opacity :on-press="like" >
         <icon name="heart" size="30" color="grey" v-if="article.userLike"/>
@@ -69,6 +69,11 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// Import store manager
+import store from '../../store';
+// Network utils
+import { isResponseReadable, timerPromise } from '../../utils/NetworkUtils';
+
 export default{
   props: {
     navigation: { type: Object },
@@ -79,13 +84,33 @@ export default{
     click: function(){
       this.navigation.navigate('Article',{article: this.article});
     },
-    like: function(){
-      // Changing the internal state
-      this.article.userLike = !this.article.userLike
+    like: async function(){
+      // Checking if the user is logged in
+      if(store.state.session.token == '')
+        this.navigation.navigate('Login');
+
+      // Creating variables
+      var endpoint = store.state.endpoint + 'article/like/' + this.article.id;
+      var params = { method: "get", headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
+
+      // Promise to handle the request
+      var promise = Promise.race([timerPromise(),
+        fetch(endpoint,params).then( response => response.json() ).catch((error) => {
+            return 'Connection problems';
+          })
+      ]);
+
       if(this.article.userLike)
-        this.article.likesCount += 1;
+        params.method = "delete";
       else
-        this.article.likesCount -= 1;
+        params.method = "post";
+
+      var a = await promise;
+
+      if(!isResponseReadable(a))
+        alert('Connection problems! We are not able to post your like');
+
+      this.article = a;
     }
   }
 }

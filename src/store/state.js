@@ -6,7 +6,23 @@ export function getDefaultState() {
     endpoint: ip,
     session: {
       token: '',
-      user: ''
+      user: {
+        email : '',
+        name : '',
+        surname : '',
+        password : '',
+        gender : '',
+        birthday : '',
+        country: '',
+        phone: '',
+        profilePic: '',
+        level: '',
+        premium: false
+      }
+    },
+    login: {
+      email: 'cesare@email.it',
+      password: 'passwordSegret@123',
     },
     // Anything in the 'blob' will be stored in the state
     // but not saved in the AsyncStorage

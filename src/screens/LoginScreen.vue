@@ -3,9 +3,10 @@
     <scroll-view  class="scroll" :content-container-style="{contentContainer: {paddingVertical: 20}}">
       <text class="title">Sign In</text>
       <!-- TODO: must be changed an loaded using uri -->
-      <image class="user-image" :source="require('../../assets/imgs/usertest.jpg')" />
-      <text-input class="password" placeholder="password" v-model="password" :onChangeText="passwordChange" secureTextEntry="true" />
-      <touchable-opacity class="element-container button" :on-press="login">
+      <image class="user-image" :source="profilePic" v-if="hasProfilePic" />
+      <text-input class="element" placeholder="email" v-model="login.email" :onChangeText="text => paramChange('email',text)" v-else/>
+      <text-input class="element" placeholder="password" v-model="login.password" :onChangeText="text => paramChange('password',text)" secureTextEntry="true" />
+      <touchable-opacity class="element-container button" :on-press="loginHandler">
         <text class="button-text">SIGN IN</text>
       </touchable-opacity>
       <view class="links">
@@ -39,7 +40,7 @@
   borderRadius: 150;
   resizeMode: contain;
 }
-.password {
+.element {
   background-color: white;
   margin-top: 50;
   padding-bottom: 5;
@@ -77,13 +78,22 @@
 // Managing external modal
 import { Animated, Easing, Keyboard } from 'react-native';
 
+// Import store manager
+import store from '../store';
+
+// Network utils
+import { postLogin } from '../utils/NetworkUtils';
+
 export default{
   props: {
     navigation: { type: Object }
   },
   data: function(){
     return {
-      password: '',
+      login: JSON.parse(JSON.stringify(store.state.login)),
+      hasProfilePic: store.state.session.user.profilePic && (store.state.session.user.profilePic.uri != '')
+      && (store.state.login.email != ''),
+      profilePic: store.state.session.user.profilePic,
       keyboard: {
         showListener: null,
         hideListener: null,
@@ -102,14 +112,35 @@ export default{
     this.keyboard.hideListener.remove();
   },
   methods:{
-    passwordChange: function (p) {
-      this.password = p;
+    paramChange: function (key,value) {
+      this.login[key] = value;
     },
-    login: function() {
-      this.navigation.navigate("User");
+    loginHandler: function() {
+      // Making the request
+      return postLogin(this.login).then(result => {
+        // Checking the result (network)
+        if(result.status){
+            console.log(result);
+            // Evaluation the result
+            if(result.session.response != 'Successful login'){
+              alert(result.session.response);
+            }
+            else {
+              // Successful login
+              delete result.session.response;
+              store.commit('sessionMutation', result.session);
+              store.commit('loginMutation', this.login);
+              store.commit('SAVE');
+              this.navigation.navigate('User');
+            }
+        }
+        else {
+          alert('Connection problems');
+        }
+      });
     },
     goToRegistration: function () {
-      this.navigation.navigate("Registration");
+      this.navigation.navigate('Registration');
     },
     keyboardWillShow(event){
       // Animation to change the position of the comment-typer
