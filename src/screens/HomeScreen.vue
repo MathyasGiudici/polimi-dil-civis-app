@@ -1,5 +1,6 @@
 <template>
-  <scroll-view class="scroll-container" :content-container-style="{contentContainer: {paddingVertical: 20}}">
+  <scroll-view class="scroll-container" :content-container-style="{contentContainer: {paddingVertical: 20}}" >
+    <RefreshControl :refreshing="refreshing" :onRefresh="refresh" />
     <status-bar bar-style="dark-content" />
     <touchable-opacity class="game" :on-press="game">
       <text class="game-text">DAILY GAME</text>
@@ -27,6 +28,15 @@
 </style>
 
 <script>
+// Import of react for refresh control
+import { RefreshControl } from 'react-native';
+
+// Import store manager
+import store from '../store';
+
+// Network utils
+import { getHome } from '../utils/NetworkUtils';
+
 // Import of components
 import Article from './components/Article.vue';
 
@@ -34,40 +44,19 @@ export default{
   props: {
     navigation: { type: Object }
   },
-  components: { Article, },
+  components: { Article, RefreshControl},
   data: function(){
     return {
-      articles: [
-        {
-          title: 'Google',
-          text: 'Subtitle\nsub\nsub',
-          topic: 'Topic1',
-          source: {
-            name: 'Source',
-            url: 'https://www.google.it'
-          },
-          userLike: false,
-          likesCount: 10,
-          commentsCount: 0,
-        },
-        {
-          title: 'Facebook',
-          text: 'Subtitle\nsubnsub',
-          topic: 'Topic 2',
-          source: {
-            name: 'Source',
-            url: 'https://www.facebook.it'
-          },
-          userLike: false,
-          likesCount: 2,
-          commentsCount: 1,
-        },
-      ],
+      articles: store.state.blob.home,
+      refreshing: false
     };
   },
   methods:{
     game: function(){
       this.navigation.navigate('Game');
+    },
+    refresh: async function () {
+      await getHome();
     }
   }
 }

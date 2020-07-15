@@ -1,14 +1,18 @@
 // Default state object
 export function getDefaultState() {
+  var isTest = true;
+  var ip = isTest ? 'http://localhost:8080/api/' : 'https://polimi-dil-civis.herokuapp.com/api/';
   return {
-    user: {
+    endpoint: ip,
+    session: {
       token: '',
-      email: ''
+      user: ''
     },
-    // Anything in the 'blob' will be stored in the state 
+    // Anything in the 'blob' will be stored in the state
     // but not saved in the AsyncStorage
-    // blob : {
-    //
-    // }
+    blob : {
+      home: [],
+      recommended: [],
+    }
   };
 };

@@ -26,6 +26,9 @@
       <touchable-opacity class="element-container":on-press="logout">
         <text class="element-text">Logout</text>
       </touchable-opacity>
+      <touchable-opacity class="element-container":on-press="refreshState">
+        <text class="element-text">Delete State</text>
+      </touchable-opacity>
     </scroll-view>
   </safe-area-view>
 </template>
@@ -93,6 +96,10 @@ import * as React from 'react';
 import { Image, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// Import store manager
+import store from '../store';
+import {getDefaultState} from '../store/state';
+
 export default{
   props: {
     navigation: { type: Object }
@@ -116,6 +123,10 @@ export default{
     },
     logout: function () {
       this.navigation.navigate("Login");
+    },
+    refreshState: function () {
+      store.commit("DELETE");
+      store.commit("REPLACE", getDefaultState());
     }
   }
 }

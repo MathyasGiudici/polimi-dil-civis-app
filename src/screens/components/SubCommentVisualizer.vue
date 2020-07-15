@@ -21,10 +21,10 @@
       </touchable-opacity>
       <text class="social-text">{{comment.likesCount}}</text>
       <view class="social-padding"></view>
-      <view style="flex-direction: row" v-if="comment.commentsCount>0">
+      <!-- <view style="flex-direction: row" v-if="comment.commentsCount>0">
         <icon name="comment-outline" size="30" color="grey"/>
         <text class="social-text">{{comment.commentsCount}}</text>
-      </view>
+      </view> -->
     </view>
   </view>
 </template>

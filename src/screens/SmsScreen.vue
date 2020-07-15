@@ -2,13 +2,13 @@
   <scroll-view  class="container" :content-container-style="{contentContainer: {paddingVertical: 20}}">
       <text class="title">Verification</text>
       <text class="subtitle">Enter the code we just sent to your mobile phone number</text>
-      <text-input class="code" placeholder="SMS code" v-model="code" :onChangeText="codeChange"/>
+      <text-input class="code" placeholder="SMS code" v-model="code" keyboardType="number-pad" :onChangeText="codeChange"/>
       <touchable-opacity class="element-container button">
         <text class="button-text">VERIFY</text>
       </touchable-opacity>
-      <view style="justify-content:center;padding-top: 20">
+      <!-- <view style="justify-content:center;padding-top: 20">
         <button title="Not received? Resend" color="grey" :on-press="()=>{}"/>
-      </view>
+      </view> -->
   </scroll-view>
 </template>
 

@@ -19,3 +19,7 @@ export function REPLACE(state, obj){
     state[item] = obj[item];
   });
 }
+
+export function blobMutation(state, {key, value}){
+  state.blob[key] = value;
+}

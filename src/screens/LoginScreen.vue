@@ -5,12 +5,12 @@
       <!-- TODO: must be changed an loaded using uri -->
       <image class="user-image" :source="require('../../assets/imgs/usertest.jpg')" />
       <text-input class="password" placeholder="password" v-model="password" :onChangeText="passwordChange" secureTextEntry="true" />
-      <touchable-opacity class="element-container button">
+      <touchable-opacity class="element-container button" :on-press="login">
         <text class="button-text">SIGN IN</text>
       </touchable-opacity>
       <view class="links">
         <button title="Forgot Password?" color="grey" disabled="true" />
-        <button title="Swich account" color="grey"  disabled="true"  />
+        <button title="Swich account" color="grey"  disabled="true" />
       </view>
       <view class="links" style="justify-content:center;">
         <button title="REGISTRATION" color="grey" :on-press="goToRegistration"/>
@@ -104,6 +104,9 @@ export default{
   methods:{
     passwordChange: function (p) {
       this.password = p;
+    },
+    login: function() {
+      this.navigation.navigate("User");
     },
     goToRegistration: function () {
       this.navigation.navigate("Registration");
