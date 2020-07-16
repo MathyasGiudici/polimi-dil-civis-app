@@ -1,5 +1,5 @@
 <template>
-  <view class="container" >
+  <view class="container" v-if="comment!=null">
     <!-- User Information -->
     <view class="user-container">
       <image class="user-img" :source="comment.user.profilePic"/>

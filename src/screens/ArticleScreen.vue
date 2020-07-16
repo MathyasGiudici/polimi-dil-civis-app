@@ -143,6 +143,7 @@ export default{
       },
       didFocusListener: null,
       commentListener : null,
+      filterListener: null,
       comments: [],
     };
   },
@@ -155,6 +156,7 @@ export default{
 
     // Refresh listeners
    this.commentListener = EventRegister.addEventListener('CommentPosted', this.refresh);
+   this.filterListener = EventRegister.addEventListener('FilterUpdate', this.sortComments);
    this.didFocusListener = this.navigation.addListener('didFocus',() => {
      this.refresh();});
 
@@ -168,6 +170,7 @@ export default{
 
    // Refresh listeners
    EventRegister.removeEventListener(this.commentListener);
+   EventRegister.removeEventListener(this.filterListener);
    this.didFocusListener.remove();
  },
  methods:{
@@ -243,8 +246,32 @@ export default{
         return;
 
       this.comments = c;
+      this.sortComments();
     },
-    keyboardWillShow(event){
+    sortComments: function functionName() {
+
+      var sorter = function(a,b) {
+        let a_date = new Date(a.timestamp);
+        let b_date = new Date(b.timestamp);
+        let score = a_date.getTime() - b_date.getTime();
+        score = score * (-1);
+        return score;
+      }
+      if(this.filter.filter == 'Relevance'){
+        sorter = function(a,b){
+          let a_score = a.likesCount + a.commentsCount + a.user.level;
+          let b_score = b.likesCount + b.commentsCount + b.user.level;
+          return b_score - a_score;
+        }
+      }
+
+      this.comments.sort(sorter);
+
+      this.comments.forEach((item, i) => {
+        item.children.sort(sorter);
+      });
+    },
+    keyboardWillShow: function(event){
       const value = event.endCoordinates.height - this.keyboard.shiftDown;
       // Animation to change the position of the comment-typer
       Animated.timing(this.keyboard.height, {
@@ -253,7 +280,7 @@ export default{
         easing: Easing.linear,
       }).start(() => {});
     },
-    keyboardWillHide(event){
+    keyboardWillHide: function(event){
       // Animation to get back the comment-typer
       Animated.timing(this.keyboard.height, {
         toValue: 0,

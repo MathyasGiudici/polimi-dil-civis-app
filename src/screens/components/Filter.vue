@@ -54,6 +54,9 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// Event management
+import { EventRegister } from 'react-native-event-listeners';
+
 export default{
   props: {
     filter: { type: Object },
@@ -77,6 +80,7 @@ export default{
     picker: function(filter){
       this.filter.filter = filter;
       this.changeFilter();
+      EventRegister.emit('FilterUpdate',null);
     }
   }
 }

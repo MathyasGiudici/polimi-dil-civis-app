@@ -26,15 +26,7 @@
       </view>
     </view>
 
-    <!-- Sub comments -->
-    <sub-comment-visualizer v-if="toLoad" :comment="comment.children[0]" />
-
-    <!-- Load more -->
-    <view class="loadmore" v-if="toLoad">
-      <button title="Load more comments" color="grey" :on-press="loadMore"/>
-    </view>
-
-    <sub-comment-visualizer v-if="!toLoad" v-for="child in comment.children" :comment="child" />
+    <sub-comment-visualizer v-for="child in comment.children" :comment="child" />
 
     <comment-typer class="comment-typer-style" :navigation="navigation" eventType="child"
       :article="comment.article.toString()" :comment="comment.id.toString()"/>
@@ -124,11 +116,6 @@ export default{
     comment: { type: Object }
   },
   components: { CommentTyper, Icon, SubCommentVisualizer },
-  data: function(){
-    return {
-      toLoad : this.comment.children.length > 1,
-    };
-  },
   methods:{
     like: async function(){
       // Checking if the user is logged in
