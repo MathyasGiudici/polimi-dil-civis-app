@@ -8,7 +8,7 @@
         <!--Article information-->
         <article :article="article" />
 
-        <image class="image" :source="JSON.parse(article.statistics)" />
+        <image class="image" :source="imageSource" v-if="imageSource != null" />
       </scroll-view>
     </view>
 </template>
@@ -52,6 +52,11 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// Import store manager
+import store from '../store';
+// Network utils
+import { isResponseReadable, timerPromise } from '../utils/NetworkUtils';
+
 // Import of components
 import Article from './components/Article.vue';
 
@@ -63,9 +68,17 @@ export default{
   data: function(){
     return {
       article: this.navigation.state.params.article,
+      imageSource: null,
     };
   },
- methods:{
+  mounted: async function() {
+    // Creating variables
+    var endpoint = store.state.baseUrl + 'statistics/' + this.article.statistics;
+    var params = { uri: endpoint, method: 'GET', headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
+
+    this.imageSource = params;
+  },
+  methods:{
     goBack: function () {
       this.navigation.navigate('Article',{article: this.navigation.state.params.article});
     },

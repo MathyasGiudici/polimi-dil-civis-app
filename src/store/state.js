@@ -1,9 +1,10 @@
 // Default state object
 export function getDefaultState() {
   var isTest = true;
-  var ip = isTest ? 'http://localhost:8080/api/' : 'https://polimi-dil-civis.herokuapp.com/api/';
+  var ip = isTest ? 'http://localhost:8080/' : 'https://polimi-dil-civis.herokuapp.com/';
   return {
-    endpoint: ip,
+    baseUrl: ip,
+    endpoint: ip + 'api/',
     session: {
       token: '',
       user: {
