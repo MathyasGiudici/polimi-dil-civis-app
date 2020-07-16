@@ -114,7 +114,7 @@ export default{
       this.isLogged = true;
     },
     updateSearch: function(search){
-      this.search = search;
+      this.search = search.toLowerCase();
       this.isSearchMode = (this.search != '');
       this.refresh();
     },

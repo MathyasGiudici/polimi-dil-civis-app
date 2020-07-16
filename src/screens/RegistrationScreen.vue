@@ -3,7 +3,7 @@
     <scroll-view  class="scroll" :content-container-style="{contentContainer: {paddingVertical: 20}}">
       <text class="title">Sign Up</text>
 
-      <image class="user-image" :source="user.profilePic" v-if="isImageLoaded" />
+      <image class="user-image" :source="imageLoaded" v-if="isImageLoaded" />
       <touchable-opacity class="user-image" style="background-color:lightgrey;" :on-press="selectFile" v-else>
         <text class="user-image-text">Load</text>
       </touchable-opacity>
@@ -139,6 +139,11 @@ import * as Permissions from 'expo-permissions';
 // Managing external modal
 import { Animated, Easing, Keyboard } from 'react-native';
 
+// Import store manager
+import store from '../store';
+// Network utils
+import { isResponseReadable, timerPromise } from '../utils/NetworkUtils';
+
 export default{
   props: {
     navigation: { type: Object }
@@ -151,14 +156,15 @@ export default{
         name: '',
         surname: '',
         password: '',
-        gender: '',
+        gender: 'male',
         birthday: this.printDate(today),
         country: 'italy',
         phone: '',
-        profilePic: {uri: '../../assets/imgs/usertest.jpg'},
+        profilePic: '',
       },
       isMale: true,
       isDateVisible: false,
+      imageLoaded: null,
       isImageLoaded: false,
       dateObj: today,
       keyboard: {
@@ -180,10 +186,69 @@ export default{
   },
   methods:{
     changeParameter: function (key,value) {
+      if(key == 'email')
+        value = value.toLowerCase();
+
       this.user[key] = value;
     },
-    register: function () {
-      this.navigation.navigate("Sms");
+    register: async function () {
+      // Checking parameters
+      if(this.user.name == '' || this.user.surname == '' ||
+         this.user.email == '' || this.user.password == '' ||
+         this.user.phone == '' ){
+        alert('You have to fill all the fields');
+        return;
+      }
+
+      // Adjusting the date
+      this.user.birthday = this.dateObj.toISOString().split('T')[0];
+
+      // Parameters
+      var endpoint = store.state.endpoint + 'user/register';
+      var params = { method: "post", headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.user)};
+
+      // Promise to handle the request
+      var promise = Promise.race([timerPromise(),
+        fetch(endpoint,params).then( response => response.json() ).catch((error) => {
+            return 'Connection problems';
+          })
+      ]);
+
+      var user = await promise;
+
+      // Evaluation of the response
+      if(!isResponseReadable(user)){
+        alert('Connection problems');
+        return;
+      }
+
+      // Saving of the parameters
+      store.commit('loginMutation', {email: this.user.email, password: this.user.password});
+      store.commit('SAVE');
+
+      if(this.isImageLoaded)
+        this.sendPicture(this.user.email);
+
+      // Moving to SMS page
+      this.navigation.navigate("Sms",{email: this.user.email});
+    },
+    sendPicture: async function() {
+      var photo = {
+        uri: this.imageLoaded.uri,
+        type: this.imageLoaded.type,
+        name: this.imageLoaded.uri.split('/')[this.imageLoaded.uri.split('/').length-1],
+      };
+
+      var endpoint = store.state.endpoint + 'user/register/picture';
+      var body = new FormData();
+
+      body.append('image', photo);
+      body.append('email', this.user.email);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', endpoint);
+      xhr.send(body);
     },
     goToLogin: function () {
       this.navigation.navigate("Login");
@@ -223,7 +288,7 @@ export default{
           quality: 1,
         });
         if (!result.cancelled) {
-          this.user.profilePic = result;
+          this.imageLoaded = result;
           this.isImageLoaded = true;
         }
       } catch (E) {

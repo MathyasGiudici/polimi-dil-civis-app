@@ -3,7 +3,7 @@
       <text class="title">Verification</text>
       <text class="subtitle">Enter the code we just sent to your mobile phone number</text>
       <text-input class="code" placeholder="SMS code" v-model="code" keyboardType="number-pad" :onChangeText="codeChange"/>
-      <touchable-opacity class="element-container button">
+      <touchable-opacity class="element-container button" :on-press="verify">
         <text class="button-text">VERIFY</text>
       </touchable-opacity>
       <!-- <view style="justify-content:center;padding-top: 20">
@@ -69,6 +69,11 @@
 </style>
 
 <script>
+// Import store manager
+import store from '../store';
+// Network utils
+import { isResponseReadable, timerPromise } from '../utils/NetworkUtils';
+
 export default{
   props: {
     navigation: { type: Object }
@@ -82,6 +87,32 @@ export default{
     codeChange: function (t) {
       this.code = t;
     },
+    verify: async function() {
+      // Parameters
+      var endpoint = store.state.endpoint + 'sms';
+      var params = { method: "post", headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: this.navigation.state.params.email,
+          code: this.code
+        })};
+
+      // Promise to handle the request
+      var promise = Promise.race([timerPromise(),
+        fetch(endpoint,params).then( response => response.json() ).catch((error) => {
+            return 'Connection problems';
+          })
+      ]);
+
+      var user = await promise;
+
+      // Evaluation of the response
+      if(!isResponseReadable(user)){
+        alert('Connection problems');
+        return;
+      }
+
+      this.navigation.navigate("Login");
+    }
   }
 }
 </script>
