@@ -109,19 +109,20 @@ export default{
   components: { Icon, Image, SafeAreaView },
   data: function(){
     return {
-      user: store.state.session.user
+      user: store.state.session.user,
+      didFocusListener: null
     };
   },
   mounted: function(){
     // Listener for the page focus (to refresh)
-    this.willFocusListener = this.navigation.addListener('willFocus',() =>{
+    this.didFocusListener = this.navigation.addListener('didFocus',() =>{
       return this.checkLogin();
     });
     this.checkLogin();
   },
   beforeDestroy: function(){
     // Removing listeners
-    this.willFocusListener.remove();
+    this.didFocusListener.remove();
   },
   methods:{
     notImplemented: function () {

@@ -48,18 +48,19 @@ export default{
   data: function(){
     return {
       articles: store.state.blob.home,
+      didFocusListener: null,
       refreshing: false
     };
   },
   mounted: function(){
     // Listener for the page focus (to refresh)
-    this.willFocusListener = this.navigation.addListener('willFocus',() =>{
+    this.didFocusListener = this.navigation.addListener('didFocus',() =>{
       return this.refresh();
     });
   },
   beforeDestroy: function(){
     // Removing listeners
-    this.willFocusListener.remove();
+    this.didFocusListener.remove();
   },
   methods:{
     game: function(){

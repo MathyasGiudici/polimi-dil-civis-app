@@ -141,23 +141,34 @@ export default{
         height: 0,
         shiftDown: 0,
       },
+      didFocusListener: null,
       commentListener : null,
       comments: [],
     };
   },
   mounted: function() {
-   this.keyboard.height = new Animated.Value(0);
-   this.keyboard.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
-   this.keyboard.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
-   this.keyboard.typerListener = EventRegister.addEventListener('CommentTyper', this.typerEventHandler);
+    // Keyboard listener
+    this.keyboard.height = new Animated.Value(0);
+    this.keyboard.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
+    this.keyboard.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+    this.keyboard.typerListener = EventRegister.addEventListener('CommentTyper', this.typerEventHandler);
+
+    // Refresh listeners
    this.commentListener = EventRegister.addEventListener('CommentPosted', this.refresh);
-   this.getComments();
+   this.didFocusListener = this.navigation.addListener('didFocus',() => {
+     this.refresh();});
+
+   this.refresh();
  },
  beforeDestroy: function() {
+   // Keyboard listener
    this.keyboard.showListener.remove();
    this.keyboard.hideListener.remove();
    EventRegister.removeEventListener(this.keyboard.typerListener);
+
+   // Refresh listeners
    EventRegister.removeEventListener(this.commentListener);
+   this.didFocusListener.remove();
  },
  methods:{
     goToResource: function(){
@@ -191,6 +202,7 @@ export default{
       this.navigation.navigate('Topic',{topic: this.article.topic});
     },
     refresh: function () {
+      this.article = this.navigation.state.params.article;
       this.getCurrentArticle();
       this.getComments();
     },
