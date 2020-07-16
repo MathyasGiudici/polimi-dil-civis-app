@@ -54,6 +54,8 @@
   width: 150;
   height: 150;
   borderRadius: 150;
+  border-width: .5;
+  border-color: lightgrey;
   resizeMode: contain;
 }
 .user-name{

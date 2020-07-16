@@ -17,7 +17,7 @@ function isResponseReadable(response) {
 async function getHome() {
   // Creating variables
   var endpoint = store.state.endpoint + 'article/home';
-  var params = { method: "get", headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
+  var params = { method: 'GET', headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
 
   // Promise to handle the request
   var promise = Promise.race([timerPromise(),

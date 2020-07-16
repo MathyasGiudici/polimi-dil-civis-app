@@ -1,6 +1,7 @@
 <template>
     <view class="container">
       <scroll-view class="scroll-container" :content-container-style="{contentContainer: {paddingVertical: 20}}">
+        <RefreshControl :refreshing="refreshing" :onRefresh="refresh" />
         <touchable-opacity class="back-container" :on-press="goTopic">
           <icon name="chevron-up" color="grey" size="30"/>
           <text class="back-button">Go to Topic</text>
@@ -23,14 +24,15 @@
         <!-- Filter -->
         <filter :filter="filter" />
         <!-- Comment visualization -->
-        <comment-visualizer v-for="comment in comments" :comment="comment"/>
+        <comment-visualizer v-for="comment in comments" :navigation="navigation" :comment="comment"/>
 
         <!-- Padding -->
         <view style="height:60"></view>
       </scroll-view>
 
       <!-- Comment insertion -->
-      <comment-typer class="comment-typer-style" eventType="general"/>
+      <comment-typer class="comment-typer-style" :navigation="navigation" eventType="general"
+        :article="article.id.toString()" :comment="null"/>
       <animated:view :style="{ height: keyboard.height }" />
     </view>
 </template>
@@ -104,7 +106,7 @@ import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Managing external links and modal
-import { Animated, Easing, Linking, Keyboard } from 'react-native';
+import { Alert, Animated, Easing, Linking, Keyboard, RefreshControl } from 'react-native';
 
 // Event management
 import { EventRegister } from 'react-native-event-listeners';
@@ -115,13 +117,19 @@ import Filter from './components/Filter.vue';
 import CommentTyper from './components/CommentTyper.vue';
 import CommentVisualizer from './components/CommentVisualizer.vue';
 
+// Import store manager
+import store from '../store';
+// Network utils
+import { isResponseReadable, timerPromise } from '../utils/NetworkUtils';
+
 export default{
   props: {
     navigation: { type: Object },
   },
-  components: { Article, CommentTyper, CommentVisualizer, Filter, Icon },
+  components: { Article, CommentTyper, CommentVisualizer, Filter, Icon, RefreshControl },
   data: function(){
     return {
+      refreshing: false,
       article : this.navigation.state.params.article,
       filter: {
         filter: "Relevance"
@@ -133,62 +141,8 @@ export default{
         height: 0,
         shiftDown: 0,
       },
-      comments: [
-        {
-          text: 'Subtitle\nsubnsub',
-          userLike: true,
-          likesCount: 2,
-          commentsCount: 1,
-          user:{
-            name: 'Primo',
-            surname: 'Commento',
-            level: 1,
-          },
-          children: [{
-            text: 'Subtitle\nsubnsub',
-            userLike: true,
-            likesCount: 2,
-            commentsCount: 1,
-            user:{
-              name: 'Figlio',
-              surname: 'Uno',
-              level: 1,
-            },
-          },{
-            text: 'Subtitle\nsubnsub',
-            userLike: true,
-            likesCount: 2,
-            commentsCount: 1,
-            user:{
-              name: 'Figlio',
-              surname: 'Due',
-              level: 1,
-            },
-          }],
-        },
-        {
-          text: 'Subtitle\nsubnsub',
-          userLike: true,
-          likesCount: 2,
-          commentsCount: 1,
-          user:{
-            name: 'Secondo',
-            surname: 'Commento',
-            level: 1,
-          },
-          children: [{
-            text: 'Subtitle\nsubnsub',
-            userLike: true,
-            likesCount: 2,
-            commentsCount: 1,
-            user:{
-              name: 'Figlio',
-              surname: 'Unico',
-              level: 1,
-            }
-          }],
-        }
-      ],
+      commentListener : null,
+      comments: [],
     };
   },
   mounted: function() {
@@ -196,21 +150,87 @@ export default{
    this.keyboard.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
    this.keyboard.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
    this.keyboard.typerListener = EventRegister.addEventListener('CommentTyper', this.typerEventHandler);
+   this.commentListener = EventRegister.addEventListener('CommentPosted', this.refresh);
+   this.getComments();
  },
  beforeDestroy: function() {
    this.keyboard.showListener.remove();
    this.keyboard.hideListener.remove();
    EventRegister.removeEventListener(this.keyboard.typerListener);
+   EventRegister.removeEventListener(this.commentListener);
  },
  methods:{
     goToResource: function(){
-      Linking.openURL(this.article.source.url).catch((err) => console.error('An error occurred', err));
+      // Cheching the validity of the url
+      if(this.article.source.url != '')
+        Linking.openURL(this.article.source.url).catch((err) => console.error('An error occurred', err))
+      else
+        alert('Link to the resource not available');
     },
     getStatistics: function(){
+      // Checking if the user is logged
+      if(store.state.session.token == ''){
+        this.navigation.navigate('Login');
+        return;
+      }
 
+      // Cheching the premium feature
+      if(!store.state.session.user.premium){
+        Alert.alert('Alert','You have not the premium feature',
+          [ {text: 'OK', onPress: () => {this.navigation.navigate('User')}, style: 'cancel'} ],
+          { cancelable: false } );
+        return;
+      }
+
+      if(this.article.statistics !=null && this.article.statistics != '')
+        return;
+      else
+        alert('Statistics are not available');
     },
     goTopic: function () {
       this.navigation.navigate('Topic',{topic: this.article.topic});
+    },
+    refresh: function () {
+      this.getCurrentArticle();
+      this.getComments();
+    },
+    getCurrentArticle: async function () {
+      // Creating variables
+      var endpoint = store.state.endpoint + 'article/' + this.article.id;
+      var params = { method: 'GET', headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
+
+      // Promise to handle the request
+      var promise = Promise.race([timerPromise(),
+        fetch(endpoint,params).then( response => response.json() ).catch((error) => {
+            return 'Connection problems';
+          })
+      ]);
+
+      var article = await promise;
+
+      if(!isResponseReadable(article))
+        return;
+
+      this.article = article;
+    },
+    getComments: async function () {
+      // Creating variables
+      var endpoint = store.state.endpoint + 'comment?article=' + this.article.id;
+      var params = { method: 'GET', headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
+
+      // Promise to handle the request
+      var promise = Promise.race([timerPromise(),
+        fetch(endpoint,params).then( response => response.json() ).catch((error) => {
+            return 'Connection problems';
+          })
+      ]);
+
+      var c = await promise;
+
+      if(!isResponseReadable(c))
+        return;
+
+      this.comments = c;
     },
     keyboardWillShow(event){
       const value = event.endCoordinates.height - this.keyboard.shiftDown;

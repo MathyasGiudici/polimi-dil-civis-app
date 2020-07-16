@@ -91,7 +91,12 @@ export default{
 
       // Creating variables
       var endpoint = store.state.endpoint + 'article/like/' + this.article.id;
-      var params = { method: "get", headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
+      var params = { method: '', headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
+
+      if(this.article.userLike)
+        params.method = 'DELETE';
+      else
+        params.method = 'POST';
 
       // Promise to handle the request
       var promise = Promise.race([timerPromise(),
@@ -99,11 +104,6 @@ export default{
             return 'Connection problems';
           })
       ]);
-
-      if(this.article.userLike)
-        params.method = "delete";
-      else
-        params.method = "post";
 
       var a = await promise;
 

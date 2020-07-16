@@ -44,9 +44,17 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // Event management
 import { EventRegister } from 'react-native-event-listeners';
 
+// Import store manager
+import store from '../../store';
+// Network utils
+import { isResponseReadable, timerPromise } from '../../utils/NetworkUtils';
+
 export default{
   props: {
-    eventType: { type: String }
+    navigation: { type: Object },
+    eventType: { type: String },
+    article: { type: String },
+    comment: { type: String }
   },
   components: { Icon },
   data: function(){
@@ -55,9 +63,37 @@ export default{
     };
   },
   methods:{
-    send(){
-      console.log("text:" + this.text);
-      return;
+    send: async function(){
+      // Checking if the user is logged in
+      if(store.state.session.token == '')
+        this.navigation.navigate('Login');
+
+      var parent = this.eventType == 'child' ? parseInt(this.comment) : -1 ;
+      var date = new Date();
+
+      var comment = { id: 0, userLike: false, commentsCount : 0, likesCount : 0, children : [],
+        article: parseInt(this.article), user: store.state.session.user.email,
+        parent: parent,
+        text: this.text,
+        timestamp: date.toISOString()
+      };
+
+      // Creating variables
+      var endpoint = store.state.endpoint + 'comment';
+      var params = { method: "post", headers: { 'Authorization': 'Bearer ' + store.state.session.token,
+        'Content-Type': 'application/json' }, body: JSON.stringify(comment)};
+
+      // Promise to handle the request
+      var promise = Promise.race([timerPromise(),
+        fetch(endpoint,params).then( response => response.json() ).catch((error) => {
+            return 'Connection problems';
+          })
+      ]);
+
+      await promise;
+
+      EventRegister.emit('CommentPosted',null);
+      this.text='';
     },
     focus: function () {
       const code = 'focus:' + this.eventType;

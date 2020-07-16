@@ -2,8 +2,7 @@
   <view class="container" >
     <!-- User Information -->
     <view class="user-container">
-      <image class="user-img" />
-      <!-- :source="require(comment.user.profilePic)"/> -->
+      <image class="user-img" :source="comment.user.profilePic"/>
       <view>
         <text class="user-name">{{comment.user.name}} {{comment.user.surname}}</text>
         <text class="user-level">Level {{comment.user.level}}</text>
@@ -54,6 +53,7 @@
 .user-img{
   width: 60;
   height: 60;
+  borderRadius: 60;
   background-color: grey;
 }
 .user-name{
@@ -92,19 +92,45 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// Import store manager
+import store from '../../store';
+// Network utils
+import { isResponseReadable, timerPromise } from '../../utils/NetworkUtils';
+
 export default{
   props: {
     comment: { Type: Object }
   },
   components: { Icon },
   methods:{
-    like: function(){
-      // Changing the internal state
-      this.comment.userLike = !this.comment.userLike
+    like: async function(){
+      // Checking if the user is logged in
+      if(store.state.session.token == '')
+        this.navigation.navigate('Login');
+
+      // Creating variables
+      var endpoint = store.state.endpoint + 'comment/like/' + this.comment.id;
+      var params = { method: '', headers: { 'Authorization': 'Bearer ' + store.state.session.token }};
+
       if(this.comment.userLike)
-        this.comment.likesCount += 1;
+        params.method = 'DELETE';
       else
-        this.comment.likesCount -= 1;
+        params.method = 'POST';
+
+      // Promise to handle the request
+      var promise = Promise.race([timerPromise(),
+        fetch(endpoint,params).then( response => response.json() ).catch((error) => {
+            return 'Connection problems';
+          })
+      ]);
+
+      var c = await promise;
+
+      if(!isResponseReadable(c))
+        alert('Connection problems! We are not able to post your like');
+
+      this.comment.likesCount = c.likesCount;
+      this.comment.userLike = c.userLike;
     }
   }
 }

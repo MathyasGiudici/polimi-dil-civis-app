@@ -21,7 +21,6 @@ export function REPLACE(state, obj){
 }
 
 export function sessionMutation(state, session){
-  session.user.profilePic = { uri: session.user.profilePic };
   state.session = session;
 }
 
