@@ -128,7 +128,6 @@ export default{
       alert("We are sorry, the function will be available soon!");
     },
     checkLogin: function(){
-      console.log(store.state.session);
       if(store.state.session.token == '')
         this.navigation.navigate('Login');
     },

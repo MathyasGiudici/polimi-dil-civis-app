@@ -120,7 +120,6 @@ export default{
       return postLogin(this.login).then(result => {
         // Checking the result (network)
         if(result.status){
-            console.log(result);
             // Evaluation the result
             if(result.session.response != 'Successful login'){
               alert(result.session.response);
