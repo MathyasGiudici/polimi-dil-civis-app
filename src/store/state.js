@@ -28,7 +28,6 @@ export function getDefaultState() {
     // but not saved in the AsyncStorage
     blob : {
       home: [],
-      recommended: [],
     }
   };
 };

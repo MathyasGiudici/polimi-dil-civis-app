@@ -32,6 +32,7 @@ import RegistrationScreen from "./screens/RegistrationScreen.vue";
 import SmsScreen from "./screens/SmsScreen.vue";
 
 import ArticleScreen from "./screens/ArticleScreen.vue";
+import StatisticsScreen from "./screens/StatisticsScreen.vue";
 import TopicScreen from "./screens/TopicScreen.vue";
 
 // General Header of CIVIS
@@ -56,6 +57,7 @@ const BottomTabs = createBottomTabNavigator(
       screen: createStackNavigator({
           Home : HomeScreen,
           Article : ArticleScreen,
+          Statistics: StatisticsScreen,
           Topic : TopicScreen
         },
         GeneralHeader
@@ -70,6 +72,7 @@ const BottomTabs = createBottomTabNavigator(
       screen: createStackNavigator({
           Search : SearchScreen,
           Article : ArticleScreen,
+          Statistics: StatisticsScreen,
           Topic : TopicScreen
         },
         GeneralHeader

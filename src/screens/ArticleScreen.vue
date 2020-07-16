@@ -197,7 +197,7 @@ export default{
       }
 
       if(this.article.statistics !=null && this.article.statistics != '')
-        return;
+        this.navigation.navigate('Statistics',{article: this.article});
       else
         alert('Statistics are not available');
     },
