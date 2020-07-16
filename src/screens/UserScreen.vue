@@ -136,6 +136,7 @@ export default{
       this.notImplemented();
     },
     logout: function () {
+      store.commit("sessionClean");
       this.navigation.navigate('Login');
     },
     refreshState: function () {

@@ -81,6 +81,7 @@ export default{
   },
   methods:{
     refresh: function() {
+      this.articles = [];
       if(this.isSearchMode)
         this.searchHandler();
       else

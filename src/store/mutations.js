@@ -1,5 +1,6 @@
 // Import for manage the local storage
-import * as storageHandler from './storageHandler'
+import * as storageHandler from './storageHandler';
+import {getDefaultState} from './state';
 
 // Local state functions
 export function RESTORE (state){
@@ -22,6 +23,10 @@ export function REPLACE(state, obj){
 
 export function sessionMutation(state, session){
   state.session = session;
+}
+
+export function sessionClean(state){
+  state.session = getDefaultState().session;
 }
 
 export function loginMutation(state, login){

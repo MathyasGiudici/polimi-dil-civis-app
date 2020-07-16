@@ -100,18 +100,34 @@ export default{
         typerListener: null,
         height: 0,
       },
+      didFocusListener: null,
     };
   },
   mounted: function() {
+    // Keyboard listener
     this.keyboard.height = new Animated.Value(0);
     this.keyboard.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
     this.keyboard.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+
+    // Login listener
+    this.didFocusListener = this.navigation.addListener('didFocus',() =>{
+      return this.checkLogin();
+    });
+    this.checkLogin();
   },
   beforeDestroy: function() {
+    // Keyboard listener
     this.keyboard.showListener.remove();
     this.keyboard.hideListener.remove();
+
+    // Login listener
+    this.didFocusListener.remove();
   },
   methods:{
+    checkLogin: function(){
+      if(store.state.session.token != '')
+        this.navigation.navigate('User');
+    },
     paramChange: function (key,value) {
       this.login[key] = value;
     },
