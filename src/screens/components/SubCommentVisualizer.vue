@@ -19,11 +19,6 @@
         <icon name="heart-outline" size="30" color="grey" v-if="!comment.userLike"/>
       </touchable-opacity>
       <text class="social-text">{{comment.likesCount}}</text>
-      <view class="social-padding"></view>
-      <!-- <view style="flex-direction: row" v-if="comment.commentsCount>0">
-        <icon name="comment-outline" size="30" color="grey"/>
-        <text class="social-text">{{comment.commentsCount}}</text>
-      </view> -->
     </view>
   </view>
 </template>
@@ -105,8 +100,10 @@ export default{
   methods:{
     like: async function(){
       // Checking if the user is logged in
-      if(store.state.session.token == '')
-        this.navigation.navigate('Login');
+      if(store.state.session.token == ''){
+          this.navigation.navigate('Login');
+          return;
+      }
 
       // Creating variables
       var endpoint = store.state.endpoint + 'comment/like/' + this.comment.id;

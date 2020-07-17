@@ -27,7 +27,7 @@
         <text class="element-text">Logout</text>
       </touchable-opacity>
       <touchable-opacity class="element-container":on-press="refreshState">
-        <text class="element-text">Delete State</text>
+        <text class="element-text"></text>
       </touchable-opacity>
     </scroll-view>
   </safe-area-view>

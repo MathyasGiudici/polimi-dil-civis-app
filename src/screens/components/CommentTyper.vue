@@ -65,8 +65,10 @@ export default{
   methods:{
     send: async function(){
       // Checking if the user is logged in
-      if(store.state.session.token == '')
+      if(store.state.session.token == ''){
         this.navigation.navigate('Login');
+        return;
+      }
 
       var parent = this.eventType == 'child' ? parseInt(this.comment) : -1 ;
       var date = new Date();

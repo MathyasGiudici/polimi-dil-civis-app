@@ -86,8 +86,11 @@ export default{
     },
     like: async function(){
       // Checking if the user is logged in
-      if(store.state.session.token == '')
+      if(store.state.session.token == ''){
         this.navigation.navigate('Login');
+        return;
+      }
+
 
       // Creating variables
       var endpoint = store.state.endpoint + 'article/like/' + this.article.id;
