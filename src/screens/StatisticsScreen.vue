@@ -41,7 +41,7 @@
 .image{
   margin-top: 20;
   width: 100%;
-  height: 480;
+  height: 380;
   background-color: white;
   resizeMode: contain;
 }

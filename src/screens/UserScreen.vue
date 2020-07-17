@@ -26,9 +26,9 @@
       <touchable-opacity class="element-container":on-press="logout">
         <text class="element-text">Logout</text>
       </touchable-opacity>
-      <touchable-opacity class="element-container":on-press="refreshState">
-        <text class="element-text"></text>
-      </touchable-opacity>
+      <!-- <touchable-opacity class="element-container":on-press="refreshState">
+        <text class="element-text">Refresh State of the application</text>
+      </touchable-opacity> -->
     </scroll-view>
   </safe-area-view>
 </template>

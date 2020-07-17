@@ -1,6 +1,6 @@
 // Default state object
 export function getDefaultState() {
-  var isTest = true;
+  var isTest = false;
   var ip = isTest ? 'http://localhost:8080/' : 'https://polimi-dil-civis.herokuapp.com/';
   return {
     baseUrl: ip,
